@@ -186,7 +186,7 @@ const popularProducts = [
     id: 8,
     name: "Yoga Mat",
     category: "Sports & Outdoors",
-    price: 24.99,
+    price: 26.99,
     storesCount: 7,
     image: "/placeholder.svg?height=300&width=300",
   },
