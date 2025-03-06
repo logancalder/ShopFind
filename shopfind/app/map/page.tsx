@@ -38,9 +38,9 @@ interface ProductStore {
   inStock: boolean
 }
 
-// Set your Mapbox access token here
-// In a real application, this should be an environment variable
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN // mapbox access token
+
+// IMPORTANT: ^ this reads from .env.local so it wont work unless u set it
 
 export default function MapPage() {
   // Get search params from URL
@@ -389,11 +389,11 @@ const mockProducts: Product[] = [
   },
   {
     id: 5,
-    name: "Backpack",
-    category: "Fashion",
-    price: 39.99,
+    name: "Boba",
+    category: "Food & Drink",
+    price: 9.99,
     image: "/placeholder.svg?height=300&width=300",
-    description: "Durable backpack with multiple compartments",
+    description: "For the boba lovers",
   },
   {
     id: 6,
@@ -401,23 +401,23 @@ const mockProducts: Product[] = [
     category: "Health & Wellness",
     price: 29.99,
     image: "/placeholder.svg?height=300&width=300",
-    description: "Premium whey protein powder for muscle recovery",
+    description: "we go jim",
   },
   {
     id: 7,
-    name: "Smart Watch",
+    name: "Apple Watch",
     category: "Electronics",
-    price: 199.99,
+    price: 599.99,
     image: "/placeholder.svg?height=300&width=300",
-    description: "Feature-rich smartwatch with health monitoring",
+    description: "Apple's overpriced watch",
   },
   {
     id: 8,
-    name: "Yoga Mat",
-    category: "Sports & Outdoors",
+    name: "Water Bottle",
+    category: "Food & Drink",
     price: 24.99,
     image: "/placeholder.svg?height=300&width=300",
-    description: "Non-slip yoga mat with carrying strap",
+    description: "Water bottle with a built-in filter",
   },
 ]
 

@@ -114,11 +114,6 @@ export default function Home() {
       </main>
       <footer className="border-t py-6 md:py-8">
         <div className="container flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="h-5 w-5 text-primary" />
-            <span className="text-lg font-bold">ShopFind</span>
-          </div>
-          <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} ShopFind. All rights reserved.</p>
         </div>
       </footer>
     </div>
