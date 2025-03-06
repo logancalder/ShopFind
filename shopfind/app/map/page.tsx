@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 
-// Define types for our data
+// define types for our data
 interface Store {
   id: number
   name: string
@@ -38,53 +38,51 @@ interface ProductStore {
   inStock: boolean
 }
 
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN // mapbox access token
-
-// IMPORTANT: ^ this reads from .env.local so it wont work unless u set it
+// set the mapbox access token
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN // ensure this is set in your environment
 
 export default function MapPage() {
-  // Get search params from URL
+  // get search parameters from the url
   const searchParams = useSearchParams()
   const router = useRouter()
-  const searchQuery = searchParams.get("search") || ""
+  const initialSearchQuery = searchParams.get("search") || ""
 
-  // States
-  const [search, setSearch] = useState(searchQuery)
-  const [userLocation, setUserLocation] = useState<[number, number]>([-0.09, 51.505]) // Default to London (lng, lat for Mapbox)
+  // state variables for managing search and data
+  const [search, setSearch] = useState(initialSearchQuery)
+  const [userLocation, setUserLocation] = useState<[number, number]>([-0.09, 51.505]) // default to london coordinates
   const [stores, setStores] = useState<Store[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [productStores, setProductStores] = useState<ProductStore[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [resultsFound, setResultsFound] = useState(true)
 
-  // Map refs
+  // map references
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const markers = useRef<mapboxgl.Marker[]>([])
 
-  // Get user's location
+  // get user's location using geolocation api
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setUserLocation([position.coords.longitude, position.coords.latitude]) // Note: Mapbox uses [lng, lat]
+          setUserLocation([position.coords.longitude, position.coords.latitude]) // mapbox uses [lng, lat]
         },
         () => {
-          console.log("Unable to retrieve your location")
+          console.log("unable to retrieve your location")
         },
       )
     }
   }, [])
 
-  // Load mock data
+  // load mock data for demonstration
   useEffect(() => {
-    // Mock data for demo purposes
     setStores(mockStores)
     setProducts(mockProducts)
     setProductStores(mockProductStores)
   }, [])
 
-  // Initialize map
+  // initialize the map
   useEffect(() => {
     if (!mapContainer.current || map.current) return
 
@@ -95,10 +93,10 @@ export default function MapPage() {
       zoom: 13,
     })
 
-    // Add navigation controls
+    // add navigation controls to the map
     map.current.addControl(new mapboxgl.NavigationControl(), "top-right")
 
-    // Clean up on unmount
+    // clean up the map on component unmount
     return () => {
       if (map.current) {
         map.current.remove()
@@ -107,7 +105,7 @@ export default function MapPage() {
     }
   }, [userLocation[0], userLocation[1]])
 
-  // Update map center when user location changes
+  // update map center when user location changes
   useEffect(() => {
     if (map.current) {
       map.current.flyTo({
@@ -118,69 +116,67 @@ export default function MapPage() {
     }
   }, [userLocation])
 
-  // Handle search when URL param changes
+  // handle search when url parameter changes
   useEffect(() => {
-    if (searchQuery) {
-      handleSearch(searchQuery)
+    if (initialSearchQuery) {
+      handleSearch(initialSearchQuery)
     }
-  }, [searchQuery])
+  }, [initialSearchQuery])
 
-  // Update markers when stores change
+  // update markers when stores change
   useEffect(() => {
-    // Clear existing markers
+    // clear existing markers
     markers.current.forEach((marker) => marker.remove())
     markers.current = []
 
     if (!map.current) return
 
-    // Add new markers
+    // add new markers for each store
     stores.forEach((store) => {
       const storeProducts = findProductInStore(store.id)
 
-      // Create popup content
+      // create popup content for the store
       const popupContent = document.createElement("div")
-      popupContent.className = "w-48 p-2"
+      popupContent.className = "popup-content"
 
       const storeName = document.createElement("h3")
-      storeName.className = "font-semibold text-base"
+      storeName.className = "store-name"
       storeName.textContent = store.name
       popupContent.appendChild(storeName)
 
       const storeAddress = document.createElement("p")
-      storeAddress.className = "text-xs text-gray-500 mb-2"
+      storeAddress.className = "store-address"
       storeAddress.textContent = store.address
       popupContent.appendChild(storeAddress)
 
       const productsContainer = document.createElement("div")
-      productsContainer.className = "space-y-2 mt-2 max-h-40 overflow-y-auto"
+      productsContainer.className = "products-container"
 
       storeProducts.forEach((product) => {
         if (!product) return
 
         const productDiv = document.createElement("div")
-        productDiv.className = "flex flex-col"
+        productDiv.className = "product-div"
 
         const productHeader = document.createElement("div")
-        productHeader.className = "flex justify-between items-center mb-1"
+        productHeader.className = "product-header"
 
         const productName = document.createElement("span")
-        productName.className = "text-sm font-medium"
+        productName.className = "product-name"
         productName.textContent = product.name
 
         const productPrice = document.createElement("span")
-        productPrice.className = "text-sm"
+        productPrice.className = "product-price"
         productPrice.textContent = `$${product.price.toFixed(2)}`
 
         productHeader.appendChild(productName)
         productHeader.appendChild(productPrice)
         productDiv.appendChild(productHeader)
 
-        // Add product image placeholder
+        // add product image placeholder
         const imgContainer = document.createElement("div")
-        imgContainer.className = "h-16 w-full bg-gray-200 rounded"
+        imgContainer.className = "img-container"
         imgContainer.style.backgroundImage = `url(${product.image || "/placeholder.svg"})`
-        imgContainer.style.backgroundSize = "cover"
-        imgContainer.style.backgroundPosition = "center"
 
         productDiv.appendChild(imgContainer)
         productsContainer.appendChild(productDiv)
@@ -188,10 +184,10 @@ export default function MapPage() {
 
       popupContent.appendChild(productsContainer)
 
-      // Create popup
+      // create a popup for the marker
       const popup = new mapboxgl.Popup({ offset: 25 }).setDOMContent(popupContent)
 
-      // Create marker
+      // create and add the marker to the map
       const marker = new mapboxgl.Marker()
         .setLngLat([store.lng, store.lat])
         .setPopup(popup)
@@ -201,11 +197,11 @@ export default function MapPage() {
     })
   }, [stores, search])
 
-  // Search function
+  // search function to filter products
   const handleSearch = (query: string) => {
     setIsLoading(true)
 
-    // Simulate API call delay
+    // simulate api call delay
     setTimeout(() => {
       const filteredProducts = mockProducts.filter((product) =>
         product.name.toLowerCase().includes(query.toLowerCase()),
@@ -215,10 +211,10 @@ export default function MapPage() {
         setResultsFound(true)
         const productIds = filteredProducts.map((p) => p.id)
 
-        // Find stores that carry these products
+        // find stores that carry these products
         const relevantProductStores = mockProductStores.filter((ps) => productIds.includes(ps.productId) && ps.inStock)
 
-        // Filter stores that have these products
+        // filter stores that have these products
         const storeIds = [...new Set(relevantProductStores.map((ps) => ps.storeId))]
         const filteredStores = mockStores.filter((store) => storeIds.includes(store.id))
 
@@ -232,13 +228,13 @@ export default function MapPage() {
     }, 500)
   }
 
-  // Handle form submission
+  // handle form submission for search
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     router.push(`/map?search=${encodeURIComponent(search)}`)
   }
 
-  // Find product in a store
+  // find products available in a specific store
   const findProductInStore = (storeId: number) => {
     const storeProducts = mockProductStores
       .filter((ps) => ps.storeId === storeId && ps.inStock)
@@ -250,7 +246,7 @@ export default function MapPage() {
         }
       })
 
-    // Filter by search query if present
+    // filter by search query if present
     if (search) {
       return storeProducts.filter((product) => product?.name.toLowerCase().includes(search.toLowerCase()))
     }
@@ -344,7 +340,7 @@ export default function MapPage() {
   )
 }
 
-// Mock data
+// mock data for demonstration purposes
 const mockStores: Store[] = [
   { id: 1, name: "TechWorld", address: "1234 El Camino Real, Santa Clara, CA", lat: 42.420971, lng: -83.136139 },
   { id: 2, name: "SportsMart", address: "5675 Great America Pkwy, Santa Clara, CA", lat: 37.3595, lng: -121.9800 },
@@ -385,7 +381,7 @@ const mockProducts: Product[] = [
     category: "Electronics",
     price: 14.99,
     image: "/placeholder.svg?height=300&width=300",
-    description: "Fast-charging USB-C smartphone charger",
+    description: "Fast-charging usb-c smartphone charger",
   },
   {
     id: 5,

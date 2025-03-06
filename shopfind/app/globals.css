@@ -87,3 +87,55 @@
   100% { background-position: 0% 50%; }
 }
 
+.popup-content {
+  width: 12rem; /* Adjust as needed */
+  padding: 0.5rem; /* Adjust as needed */
+}
+
+.store-name {
+  font-weight: 600;
+  font-size: 1rem; /* Adjust as needed */
+}
+
+.store-address {
+  font-size: 0.75rem; /* Adjust as needed */
+  color: #6b7280; /* Adjust as needed */
+  margin-bottom: 0.5rem; /* Adjust as needed */
+}
+
+.products-container {
+  margin-top: 0.5rem; /* Adjust as needed */
+  max-height: 10rem; /* Adjust as needed */
+  overflow-y: auto; /* Adjust as needed */
+}
+
+.product-div {
+  display: flex;
+  flex-direction: column; /* Adjust as needed */
+}
+
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem; /* Adjust as needed */
+}
+
+.product-name {
+  font-size: 0.875rem; /* Adjust as needed */
+  font-weight: 500; /* Adjust as needed */
+}
+
+.product-price {
+  font-size: 0.875rem; /* Adjust as needed */
+}
+
+.img-container {
+  height: 4rem; /* Adjust as needed */
+  width: 100%; /* Adjust as needed */
+  background-color: #e5e7eb; /* Adjust as needed */
+  border-radius: 0.375rem; /* Adjust as needed */
+  background-size: cover; /* Adjust as needed */
+  background-position: center; /* Adjust as needed */
+}
+
