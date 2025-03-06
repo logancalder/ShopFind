@@ -1,7 +1,9 @@
 import * as React from "react"
 
+// breakpoint for mobile devices (768px)
 const MOBILE_BREAKPOINT = 768
 
+// checks for mobile viewing, which helps with responsive design
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
 

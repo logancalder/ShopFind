@@ -163,7 +163,7 @@ export default function MapPage() {
 
         const productName = document.createElement("span")
         productName.className = "product-name"
-        productName.textContent = product.name
+        productName.textContent = product.name ?? ""
 
         const productPrice = document.createElement("span")
         productPrice.className = "product-price"
@@ -248,7 +248,7 @@ export default function MapPage() {
 
     // filter by search query if present
     if (search) {
-      return storeProducts.filter((product) => product?.name.toLowerCase().includes(search.toLowerCase()))
+      return storeProducts.filter((product) => product?.name?.toLowerCase().includes(search.toLowerCase()))
     }
 
     return storeProducts
@@ -256,6 +256,8 @@ export default function MapPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
+
+      {/* header with logo and navigation links */}
       <header className="border-b">
         <div className="container flex items-center justify-between h-16 py-4">
           <Link href="/" className="flex items-center gap-2">
@@ -274,6 +276,8 @@ export default function MapPage() {
       </header>
 
       <main className="flex-1 flex flex-col md:flex-row">
+        
+        {/* sidebar with search bar and results */}
         <div className="w-full md:w-1/3 p-4 border-r">
           <form onSubmit={handleSubmit} className="mb-6">
             <div className="relative">
@@ -291,6 +295,7 @@ export default function MapPage() {
             </Button>
           </form>
 
+          { /* handles loading the results and displaying them in cards, once again using the radix ui library ones */ }
           {isLoading ? (
             <div className="flex justify-center my-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -332,6 +337,7 @@ export default function MapPage() {
           ) : null}
         </div>
 
+        {/* map container, which was defined above */}
         <div className="flex-1 h-[calc(100vh-4rem)]">
           <div ref={mapContainer} className="h-full w-full" />
         </div>

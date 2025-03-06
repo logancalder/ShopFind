@@ -1,3 +1,4 @@
+// loading wheel for map when waiting on mapbox data
 export default function Loading() {
   return (
     <div className="flex items-center justify-center h-screen">

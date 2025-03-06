@@ -5,9 +5,13 @@ import { MapPin, ShoppingBag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
+// Home page component
+// Our classes are a mix between being defined in the global styles and via tailwindcss classes, which allow us to style our components easily
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
+
+      {/* header with logo and navigation links */}
       <header className="border-b">
         <div className="container flex items-center justify-between h-16 py-4">
           <div className="flex items-center gap-2">
@@ -25,6 +29,8 @@ export default function Home() {
         </div>
       </header>
       <main className="flex-1">
+
+        {/* section with title and button to redirect to map page */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-muted/50 to-background">
           <div className="container px-4 md:px-6 flex flex-col items-center text-center space-y-4">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
@@ -42,6 +48,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* section with popular product cards */}
         <section className="w-full py-12 md:py-24 bg-background">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -53,8 +60,11 @@ export default function Home() {
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+
+              {/* map over popular products and display them in cards */}
               {popularProducts.map((product) => (
                 <Link key={product.id} href={`/map?search=${encodeURIComponent(product.name)}`}>
+                  {/* card is part of the radix ui library for next which made our job easier */}
                   <Card className="h-full overflow-hidden transition-all hover:shadow-lg">
                     <div className="aspect-square relative">
                       <Image
@@ -82,6 +92,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* section with steps on how to use the app */}
         <section className="w-full py-12 md:py-24 bg-muted">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -120,6 +131,7 @@ export default function Home() {
   )
 }
 
+// mock data for demonstration purposes
 const popularProducts = [
   {
     id: 1,

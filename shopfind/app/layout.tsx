@@ -3,14 +3,16 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 
+// inter is the font we're using
 const inter = Inter({ subsets: ["latin"] })
 
+// metadata for the site
 export const metadata: Metadata = {
   title: "ShopFind - Find Products in Stores Near You",
-  description: "Locate exactly where to buy the products you need at the best prices in your area.",
-    generator: 'v0.dev'
+  description: "Locate exactly where to buy the products you need at the best prices in your area!"
 }
 
+// handles routing and applies the font to all components
 export default function RootLayout({
   children,
 }: {
@@ -22,7 +24,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-
-
-import './globals.css'
