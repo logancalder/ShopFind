@@ -5,7 +5,7 @@ import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
-import { Search, ShoppingBag } from "lucide-react"
+import { Search, ShoppingBag, HelpCircle } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams, useRouter } from "next/navigation"
 
@@ -60,6 +60,9 @@ export default function MapPage() {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const markers = useRef<mapboxgl.Marker[]>([])
+
+  // State for modal visibility
+  const [isHelpModalOpen, setHelpModalOpen] = useState(false);
 
   // get user's location using geolocation api
   useEffect(() => {
@@ -286,6 +289,9 @@ export default function MapPage() {
             <Link href="/map" className={router.pathname === "/map" ? currentNavLinkClass : navLinkClass}>
               Find Products
             </Link>
+            <Button onClick={() => setHelpModalOpen(true)} className="flex items-center">
+              <HelpCircle className="h-5 w-5 mr-1" /> Help
+            </Button>
           </nav>
         </div>
       </header>
@@ -362,15 +368,30 @@ export default function MapPage() {
           <div ref={mapContainer} className="h-full w-full" />
         </div>
       </main>
+
+      {/* help button (due to heuristic review) */}
+      {isHelpModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">How to Use This Page</h2>
+            <p className="mb-2">1. Type a product in the search bar to look for an item.</p>
+            <p className="mb-2">2. Any potential matches will be shown below.</p>
+            <p className="mb-2">3. Click on the store listed in the search results or on the map to view more information.</p>
+            <Button onClick={() => setHelpModalOpen(false)} className="mt-4">
+              Close
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
 // mock data for demonstration purposes
 const mockStores: Store[] = [
-  { id: 1, name: "TechWorld", address: "1234 El Camino Real, Santa Clara, CA", lat: 42.420971, lng: -83.136139 },
+  { id: 1, name: "TechWorld", address: "5160 Cherry Ave, San Jose, CA 95118", lat: 37.257359, lng: -121.872940 },
   { id: 2, name: "SportsMart", address: "5675 Great America Pkwy, Santa Clara, CA", lat: 37.3595, lng: -121.9800 },
-  { id: 3, name: "HomeGoods", address: "1000 E El Camino Real, Santa Clara, CA", lat: 37.3614, lng: -121.9275 },
+  { id: 3, name: "SJC Airport Baggage Claim", address: "1000 E El Camino Real, Santa Clara, CA", lat: 37.3614, lng: -121.9275 },
   { id: 4, name: "ElectroHub", address: "1500 S Bascom Ave, Santa Clara, CA", lat: 37.3120, lng: -121.9477 },
   { id: 5, name: "FashionPlace", address: "2000 N 1st St, Santa Clara, CA", lat: 37.3874, lng: -121.9454 },
   { id: 6, name: "HealthMart", address: "3000 Mission College Blvd, Santa Clara, CA", lat: 37.3896, lng: -121.9785 },
