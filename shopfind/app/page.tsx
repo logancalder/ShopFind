@@ -139,7 +139,7 @@ const popularProducts = [
     category: "Electronics",
     price: 79.99,
     storesCount: 12,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/headphones.webp?height=300&width=300",
   },
   {
     id: 2,
@@ -147,7 +147,7 @@ const popularProducts = [
     category: "Sports & Outdoors",
     price: 89.99,
     storesCount: 8,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/shoes.webp?height=300&width=300",
   },
   {
     id: 3,
@@ -155,15 +155,15 @@ const popularProducts = [
     category: "Home & Kitchen",
     price: 49.99,
     storesCount: 15,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/coffee.jpeg?height=300&width=300",
   },
   {
     id: 4,
-    name: "Smartphone Charger",
+    name: "Smartphone Charger (Lightning)",
     category: "Electronics",
     price: 14.99,
     storesCount: 24,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/charger.jpeg?height=300&width=300",
   },
   {
     id: 5,
@@ -171,7 +171,7 @@ const popularProducts = [
     category: "Fashion",
     price: 39.99,
     storesCount: 6,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/backpack.jpeg?height=300&width=300",
   },
   {
     id: 6,
@@ -179,7 +179,7 @@ const popularProducts = [
     category: "Health & Wellness",
     price: 29.99,
     storesCount: 9,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/gnc.avif?height=300&width=300",
   },
   {
     id: 7,
@@ -187,7 +187,7 @@ const popularProducts = [
     category: "Electronics",
     price: 199.99,
     storesCount: 11,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/watch.jpeg?height=300&width=300",
   },
   {
     id: 8,
@@ -195,7 +195,7 @@ const popularProducts = [
     category: "Sports & Outdoors",
     price: 26.99,
     storesCount: 7,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/mat.webp?height=300&width=300",
   },
 ]
 

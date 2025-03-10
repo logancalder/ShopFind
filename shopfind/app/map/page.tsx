@@ -254,6 +254,21 @@ export default function MapPage() {
     return storeProducts
   }
 
+  // Update the navigation links to highlight the current tab
+  const navLinkClass = "text-sm font-medium hover:text-primary";
+  const currentNavLinkClass = "text-sm font-medium text-primary";
+
+  // Add the handleProductClick function
+  const handleProductClick = (store: Store) => {
+    if (map.current) {
+      map.current.flyTo({
+        center: [store.lng, store.lat],
+        zoom: 15,
+        essential: true,
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
 
@@ -265,10 +280,10 @@ export default function MapPage() {
             <span className="text-xl font-bold">ShopFind</span>
           </Link>
           <nav className="flex items-center gap-4">
-            <Link href="/" className="text-sm font-medium">
+            <Link href="/" className={router.pathname === "/" ? currentNavLinkClass : navLinkClass}>
               Home
             </Link>
-            <Link href="/map" className="text-sm font-medium">
+            <Link href="/map" className={router.pathname === "/map" ? currentNavLinkClass : navLinkClass}>
               Find Products
             </Link>
           </nav>
@@ -278,22 +293,27 @@ export default function MapPage() {
       <main className="flex-1 flex flex-col md:flex-row">
         
         {/* sidebar with search bar and results */}
-        <div className="w-full md:w-1/3 p-4 border-r">
-          <form onSubmit={handleSubmit} className="mb-6">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search for products..."
-                className="pl-8"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <Button type="submit" className="w-full mt-2">
-              Find Products
-            </Button>
-          </form>
+        <div className="w-full md:w-1/3 p-3 pt-0 border-r h-[calc(100vh-4rem)] overflow-y-auto">
+          <div className="sticky top-0 bg-white z-10 p-4">
+            <form onSubmit={handleSubmit} className="mb-6">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search for products..."
+                  className="pl-8"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <Button type="submit" className="w-full mt-2">
+                Find Products
+              </Button>
+            </form>
+            <h2 className="text-lg font-semibold">
+                {stores.length} {stores.length === 1 ? "Store" : "Stores"} Found
+              </h2>
+          </div>
 
           { /* handles loading the results and displaying them in cards, once again using the radix ui library ones */ }
           {isLoading ? (
@@ -307,10 +327,6 @@ export default function MapPage() {
             </div>
           ) : stores.length > 0 ? (
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold">
-                {stores.length} {stores.length === 1 ? "Store" : "Stores"} Found
-              </h2>
-
               {stores.map((store) => {
                 const storeProducts = findProductInStore(store.id)
                 return (
@@ -322,7 +338,11 @@ export default function MapPage() {
                         <h4 className="text-sm font-medium mb-2">Available Products:</h4>
                         <div className="space-y-2">
                           {storeProducts.map((product) => (
-                            <div key={product?.id} className="flex items-center justify-between">
+                            <div 
+                              key={product?.id} 
+                              className="flex items-center justify-between cursor-pointer hover:bg-gray-100 p-2 rounded"
+                              onClick={() => handleProductClick(store)}
+                            >
                               <span className="text-sm">{product?.name}</span>
                               <span className="text-sm font-medium">${product?.price.toFixed(2)}</span>
                             </div>
