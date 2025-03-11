@@ -64,6 +64,9 @@ export default function MapPage() {
   // State for modal visibility
   const [isHelpModalOpen, setHelpModalOpen] = useState(false);
 
+  // Add state for mobile menu
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   // get user's location using geolocation api
   useEffect(() => {
     if (navigator.geolocation) {
@@ -274,15 +277,38 @@ export default function MapPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-
-      {/* header with logo and navigation links */}
+      {/* Mobile-friendly header */}
       <header className="border-b">
         <div className="container flex items-center justify-between h-16 py-4">
           <Link href="/" className="flex items-center gap-2">
             <ShoppingBag className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold">ShopFind</span>
           </Link>
-          <nav className="flex items-center gap-4">
+          
+          {/* Mobile menu button */}
+          <button 
+            className="md:hidden p-2"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            <svg 
+              className="w-6 h-6" 
+              fill="none" 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth="2" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              {isMobileMenuOpen ? (
+                <path d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+
+          {/* Desktop navigation */}
+          <nav className="hidden md:flex items-center gap-4">
             <Link href="/" className={router.pathname === "/" ? currentNavLinkClass : navLinkClass}>
               Home
             </Link>
@@ -294,12 +320,72 @@ export default function MapPage() {
             </Button>
           </nav>
         </div>
+
+        {/* Mobile navigation menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t">
+            <div className="container py-2 space-y-2">
+              <Link 
+                href="/" 
+                className={`block py-2 ${router.pathname === "/" ? currentNavLinkClass : navLinkClass}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link 
+                href="/map" 
+                className={`block py-2 ${router.pathname === "/map" ? currentNavLinkClass : navLinkClass}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Find Products
+              </Link>
+              <Button 
+                onClick={() => {
+                  setHelpModalOpen(true);
+                  setIsMobileMenuOpen(false);
+                }} 
+                className="flex items-center w-full justify-start"
+              >
+                <HelpCircle className="h-5 w-5 mr-1" /> Help
+              </Button>
+            </div>
+          </div>
+        )}
       </header>
 
       <main className="flex-1 flex flex-col md:flex-row">
+        {/* Mobile view controls */}
+        <div className="md:hidden flex justify-center gap-2 p-2 border-b sticky top-0 bg-white z-20">
+          <Button 
+            onClick={() => {
+              const sidebar = document.getElementById('sidebar');
+              const map = document.getElementById('map-container');
+              if (sidebar && map) {
+                sidebar.style.display = '';
+                map.style.display = 'none';
+              }
+            }}
+            className="flex-1"
+          >
+            List View
+          </Button>
+          <Button 
+            onClick={() => {
+              const sidebar = document.getElementById('sidebar');
+              const map = document.getElementById('map-container');
+              if (sidebar && map) {
+                sidebar.style.display = 'none';
+                map.style.display = '';
+              }
+            }}
+            className="flex-1"
+          >
+            Map View
+          </Button>
+        </div>
         
-        {/* sidebar with search bar and results */}
-        <div className="w-full md:w-1/3 p-3 pt-0 border-r h-[calc(100vh-4rem)] overflow-y-auto">
+        {/* Sidebar */}
+        <div id="sidebar" className="w-full md:w-1/3 p-3 pt-0 border-r h-[calc(100vh-4rem)] md:block overflow-y-auto">
           <div className="sticky top-0 bg-white z-10 p-4">
             <form onSubmit={handleSubmit} className="mb-6">
               <div className="relative">
@@ -317,11 +403,11 @@ export default function MapPage() {
               </Button>
             </form>
             <h2 className="text-lg font-semibold">
-                {stores.length} {stores.length === 1 ? "Store" : "Stores"} Found
-              </h2>
+              {stores.length} {stores.length === 1 ? "Store" : "Stores"} Found
+            </h2>
           </div>
 
-          { /* handles loading the results and displaying them in cards, once again using the radix ui library ones */ }
+          {/* Search results */}
           {isLoading ? (
             <div className="flex justify-center my-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -333,58 +419,67 @@ export default function MapPage() {
             </div>
           ) : stores.length > 0 ? (
             <div className="space-y-4">
-              {stores.map((store) => {
-                const storeProducts = findProductInStore(store.id)
-                return (
-                  <Card key={store.id} className="overflow-hidden">
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold">{store.name}</h3>
-                      <p className="text-sm text-muted-foreground">{store.address}</p>
-                      <div className="mt-3 pt-3 border-t">
-                        <h4 className="text-sm font-medium mb-2">Available Products:</h4>
-                        <div className="space-y-2">
-                          {storeProducts.map((product) => (
-                            <div 
-                              key={product?.id} 
-                              className="flex items-center justify-between cursor-pointer hover:bg-gray-100 p-2 rounded"
-                              onClick={() => handleProductClick(store)}
-                            >
-                              <span className="text-sm">{product?.name}</span>
-                              <span className="text-sm font-medium">${product?.price.toFixed(2)}</span>
-                            </div>
-                          ))}
-                        </div>
+              {stores.map((store) => (
+                <Card key={store.id} className="overflow-hidden">
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold">{store.name}</h3>
+                    <p className="text-sm text-muted-foreground">{store.address}</p>
+                    <div className="mt-3 pt-3 border-t">
+                      <h4 className="text-sm font-medium mb-2">Available Products:</h4>
+                      <div className="space-y-2">
+                        {findProductInStore(store.id).map((product) => (
+                          <div 
+                            key={product?.id} 
+                            className="flex items-center justify-between cursor-pointer hover:bg-gray-100 p-2 rounded"
+                            onClick={() => {
+                              handleProductClick(store);
+                              // On mobile, switch to map view when a product is clicked
+                              if (window.innerWidth < 768) {
+                                const sidebar = document.getElementById('sidebar');
+                                const map = document.getElementById('map-container');
+                                if (sidebar && map) {
+                                  sidebar.style.display = 'none';
+                                  map.style.display = '';
+                                }
+                              }
+                            }}
+                          >
+                            <span className="text-sm">{product?.name}</span>
+                            <span className="text-sm font-medium">${product?.price.toFixed(2)}</span>
+                          </div>
+                        ))}
                       </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           ) : null}
         </div>
 
-        {/* map container, which was defined above */}
-        <div className="flex-1 h-[calc(100vh-4rem)]">
+        {/* Map container */}
+        <div id="map-container" className="flex-1 h-[calc(100vh-4rem)] md:block">
           <div ref={mapContainer} className="h-full w-full" />
         </div>
       </main>
 
-      {/* help button (due to heuristic review) */}
+      {/* Help Modal - already mobile-friendly */}
       {isHelpModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded shadow-lg">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full">
             <h2 className="text-lg font-semibold mb-4">How to Use This Page</h2>
-            <p className="mb-2">1. Type a product in the search bar to look for an item.</p>
-            <p className="mb-2">2. Any potential matches will be shown below.</p>
-            <p className="mb-2">3. Click on the store listed in the search results or on the map to view more information.</p>
-            <Button onClick={() => setHelpModalOpen(false)} className="mt-4">
+            <p className="mb-2">1. Use the search bar to find products.</p>
+            <p className="mb-2">2. Click on a product to view its store location on the map.</p>
+            <p className="mb-2">3. Click on the store markers on the map to see more details.</p>
+            <p className="mb-2">4. On mobile, use the List/Map toggle to switch views.</p>
+            <Button onClick={() => setHelpModalOpen(false)} className="mt-4 w-full">
               Close
             </Button>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }
 
 // mock data for demonstration purposes
@@ -403,64 +498,64 @@ const mockProducts: Product[] = [
     name: "Wireless Headphones",
     category: "Electronics",
     price: 79.99,
-    image: "/placeholder.svg?height=300&width=300",
-    description: "High-quality wireless headphones with noise cancellation",
+    description: "Headphones with noise cancellation",
+    image: "/headphones.webp?height=300&width=300",
   },
   {
     id: 2,
     name: "Running Shoes",
     category: "Sports & Outdoors",
     price: 89.99,
-    image: "/placeholder.svg?height=300&width=300",
-    description: "Comfortable running shoes with excellent support",
+    description: "Running shoes with cushioning",
+    image: "/shoes.webp?height=300&width=300",
   },
   {
     id: 3,
     name: "Coffee Maker",
     category: "Home & Kitchen",
     price: 49.99,
-    image: "/placeholder.svg?height=300&width=300",
-    description: "Programmable coffee maker with thermal carafe",
+    description: "Automatic coffee maker",
+    image: "/coffee.jpeg?height=300&width=300",
   },
   {
     id: 4,
-    name: "Smartphone Charger",
+    name: "Smartphone Charger (Lightning)",
     category: "Electronics",
     price: 14.99,
-    image: "/placeholder.svg?height=300&width=300",
-    description: "Fast-charging usb-c smartphone charger",
+    description: "Charging cable for iPhone",
+    image: "/charger.jpeg?height=300&width=300",
   },
   {
     id: 5,
-    name: "Boba",
-    category: "Food & Drink",
-    price: 9.99,
-    image: "/placeholder.svg?height=300&width=300",
-    description: "For the boba lovers",
+    name: "Backpack",
+    category: "Fashion",
+    price: 39.99,
+    description: "Normal size backpack",
+    image: "/backpack.jpeg?height=300&width=300",
   },
   {
     id: 6,
     name: "Protein Powder",
     category: "Health & Wellness",
     price: 29.99,
-    image: "/placeholder.svg?height=300&width=300",
-    description: "we go jim",
+    description: "GNC brand protein powder",
+    image: "/gnc.avif?height=300&width=300",
   },
   {
     id: 7,
-    name: "Apple Watch",
+    name: "Smart Watch",
     category: "Electronics",
-    price: 599.99,
-    image: "/placeholder.svg?height=300&width=300",
-    description: "Apple's overpriced watch",
+    price: 199.99,
+    description: "Apple Watch Series 6",
+    image: "/watch.jpeg?height=300&width=300",
   },
   {
     id: 8,
-    name: "Water Bottle",
-    category: "Food & Drink",
-    price: 24.99,
-    image: "/placeholder.svg?height=300&width=300",
-    description: "Water bottle with a built-in filter",
+    name: "Yoga Mat",
+    category: "Sports & Outdoors",
+    price: 26.99,
+    description: "Yoga mat with non-slip surface",
+    image: "/mat.webp?height=300&width=300",
   },
 ]
 
